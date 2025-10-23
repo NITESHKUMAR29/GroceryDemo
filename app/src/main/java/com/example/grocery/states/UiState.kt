@@ -1,4 +1,4 @@
-package com.example.cleanarchitecturebasicnewsapp.states
+package com.example.grocery.states
 
 sealed class UiState<out T> {
     data object Loading : UiState<Nothing>()

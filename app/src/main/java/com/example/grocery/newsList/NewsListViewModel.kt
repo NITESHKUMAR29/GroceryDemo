@@ -1,8 +1,8 @@
-package com.example.cleanarchitecturebasicnewsapp.newsList
+package com.example.grocery.newsList
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.cleanarchitecturebasicnewsapp.states.UiState
+import com.example.grocery.states.UiState
 import com.example.domain.models.News
 import com.example.domain.useCases.GetTopHeadlinesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel

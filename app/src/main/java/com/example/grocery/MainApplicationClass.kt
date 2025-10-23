@@ -1,4 +1,4 @@
-package com.example.cleanarchitecturebasicnewsapp
+package com.example.grocery
 
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
@@ -9,7 +9,7 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.example.cleanarchitecturebasicnewsapp.worker.NewsSyncWorker
+import com.example.grocery.worker.NewsSyncWorker
 import dagger.hilt.android.HiltAndroidApp
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject

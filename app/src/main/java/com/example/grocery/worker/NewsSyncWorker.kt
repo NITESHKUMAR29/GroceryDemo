@@ -1,4 +1,4 @@
-package com.example.cleanarchitecturebasicnewsapp.worker
+package com.example.grocery.worker
 
 import android.content.Context
 import android.util.Log

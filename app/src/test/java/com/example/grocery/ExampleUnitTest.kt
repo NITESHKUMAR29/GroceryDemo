@@ -1,4 +1,4 @@
-package com.example.cleanarchitecturebasicnewsapp
+package com.example.grocery
 
 import org.junit.Test
 

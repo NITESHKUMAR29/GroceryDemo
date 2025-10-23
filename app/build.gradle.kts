@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.cleanarchitecturebasicnewsapp"
+    namespace = "com.example.grocery"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.cleanarchitecturebasicnewsapp"
+        applicationId = "com.example.grocery"
         minSdk = 24
         targetSdk = 35
         versionCode = 1

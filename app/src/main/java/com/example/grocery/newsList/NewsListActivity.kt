@@ -1,4 +1,4 @@
-package com.example.cleanarchitecturebasicnewsapp.newsList
+package com.example.grocery.newsList
 
 import android.os.Bundle
 import android.util.Log
@@ -8,8 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.example.cleanarchitecturebasicnewsapp.R
-import com.example.cleanarchitecturebasicnewsapp.states.UiState
+import com.example.grocery.R
+import com.example.grocery.states.UiState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
