@@ -19,7 +19,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "CleanArchitectureBasicNewsApp"
+rootProject.name = "GroceryApp"
 include(":app")
 include(":data")
 include(":domain")
