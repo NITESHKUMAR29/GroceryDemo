@@ -5,56 +5,78 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.paging.LoadState
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.grocery.R
+import com.example.grocery.databinding.FragmentStationaryBinding
+import com.example.grocery.productList.ProductListViewModel
+import com.example.grocery.uis.adapters.ProductLoadStateAdapter
+import com.example.grocery.uis.adapters.ProductPagingAdapter
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [StationaryFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class StationaryFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    lateinit var binding: FragmentStationaryBinding
+    private val viewModel: ProductListViewModel by activityViewModels()
+    private lateinit var adapter: ProductPagingAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_stationary, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_stationary, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment StationaryFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            StationaryFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setupAdapter()
+        observeProducts()
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.loadProducts(categoryId = 48)
+    }
+
+    private fun setupAdapter() {
+        adapter = ProductPagingAdapter()
+
+
+        binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
+        binding.recyclerView.adapter = adapter.withLoadStateHeaderAndFooter(
+            header = ProductLoadStateAdapter { adapter.retry() },
+            footer = ProductLoadStateAdapter { adapter.retry() }
+        )
+
+        binding.retryButton.setOnClickListener { adapter.retry() }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            adapter.loadStateFlow.collectLatest { loadStates ->
+                binding.progressBar.isVisible = loadStates.refresh is LoadState.Loading
+                binding.recyclerView.isVisible = loadStates.refresh is LoadState.NotLoading
+                binding.retryButton.isVisible = loadStates.refresh is LoadState.Error
+            }
+        }
+    }
+
+
+    private fun observeProducts() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.products.collectLatest { pagingData ->
+                    adapter.submitData(pagingData)
                 }
             }
+        }
     }
 }

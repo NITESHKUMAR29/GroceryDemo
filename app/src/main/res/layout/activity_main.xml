@@ -4,28 +4,27 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
+
         android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/main_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#003F94"
-            android:elevation="0dp">
+            android:background="#003F94">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:titleEnabled="false"
-                android:elevation="0dp"
-                app:layout_scrollFlags="scroll|enterAlways|snap">
+                app:layout_scrollFlags="scroll|enterAlways|snap"
+                app:titleEnabled="false">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="#003F94"
                     android:orientation="vertical"
                     android:padding="16dp">
-
 
                     <TextView
                         android:id="@+id/app_title"
@@ -37,21 +36,22 @@
                         android:textStyle="bold"
                         app:layout_collapseMode="parallax" />
 
-
-                    <EditText
-                        android:id="@+id/search_event"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:layout_marginTop="8dp"
-                        android:background="@drawable/background_search"
-                        android:hint="Search products"
-                        android:gravity="center_vertical"
-                        android:paddingHorizontal="15dp"
-                        app:layout_collapseMode="pin" />
-
                 </LinearLayout>
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+
+            <EditText
+                android:id="@+id/search_event"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_margin="16dp"
+                android:background="@drawable/background_search"
+                android:gravity="center_vertical"
+                android:hint="Search products"
+                android:paddingHorizontal="15dp"
+                app:layout_scrollFlags="enterAlways" />
+
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_bar"
@@ -59,21 +59,34 @@
                 android:layout_height="70dp"
                 android:background="#003F94"
                 android:elevation="0dp"
-                app:tabMode="fixed"
                 app:tabIndicatorColor="@null"
                 app:tabIndicatorFullWidth="false"
                 app:tabIndicatorHeight="3dp"
+                app:tabMode="fixed"
                 app:tabTextAppearance="@style/MyTabTextAppearance"
                 app:tabTextColor="@color/text_secondary_light"
                 app:tabUnboundedRipple="true" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
+
         <FrameLayout
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"/>
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_add_product"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+
+            app:backgroundTint="@color/colorAccent"
+            app:srcCompat="@drawable/outline_add_24"
+            app:tint="@android:color/white" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

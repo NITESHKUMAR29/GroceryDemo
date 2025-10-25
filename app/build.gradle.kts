@@ -52,6 +52,7 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.hilt.work)
+    implementation(libs.compressor)
     implementation(libs.androidx.paging.common.android)
     implementation(libs.androidx.paging.runtime.ktx)
     testImplementation(libs.junit)

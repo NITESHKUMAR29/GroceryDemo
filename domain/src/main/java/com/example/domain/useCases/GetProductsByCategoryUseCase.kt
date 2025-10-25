@@ -8,9 +8,18 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
+
 class GetProductsByCategoryUseCase @Inject constructor(
     private val repository: ProductRepository
 ) {
-    operator fun invoke(categoryId: Int): Flow<PagingData<Product>> =
-        repository.getProductsByCategory(categoryId).flowOn(Dispatchers.IO)
+    operator fun invoke(categoryId: Int?): Flow<PagingData<Product>> {
+        return if (categoryId == null || categoryId == 0) {
+            repository.getAllProducts()
+                .flowOn(Dispatchers.IO)
+        } else {
+            repository.getProductsByCategory(categoryId)
+                .flowOn(Dispatchers.IO)
+        }
+    }
 }
+

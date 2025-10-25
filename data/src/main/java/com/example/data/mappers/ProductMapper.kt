@@ -15,7 +15,7 @@ class ProductMapper {
         slug = dto.slug ?: "",
         price = dto.price ?: 0,
         description = dto.description ?: "",
-        category = dto.category?.let { toDomain(it) } ?: Category(0, "", "", "", "", ""),
+        category = Category(dto.categoryId ?: 0, "", "", "", "", ""),
         images = dto.images ?: emptyList(),
         creationAt = dto.creationAt ?: "",
         updatedAt = dto.updatedAt ?: ""
@@ -28,5 +28,26 @@ class ProductMapper {
         image = categoryDto.image ?: "",
         creationAt = categoryDto.creationAt ?: "",
         updatedAt = categoryDto.updatedAt ?: ""
+    )
+
+    fun toDto(domain: Product): ProductDto = ProductDto(
+        id = domain.id,
+        title = domain.title,
+        slug = domain.slug,
+        price = domain.price,
+        description = domain.description,
+        categoryId = domain.category.id,
+        images = domain.images,
+        creationAt = domain.creationAt,
+        updatedAt = domain.updatedAt
+    )
+
+    private fun toDto(category: Category): CategoryDto = CategoryDto(
+        id = category.id,
+        name = category.name,
+        slug = category.slug,
+        image = category.image,
+        creationAt = category.creationAt,
+        updatedAt = category.updatedAt
     )
 }

@@ -7,6 +7,9 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.Priority
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.example.domain.models.Product
 import com.example.grocery.R
 import com.example.grocery.databinding.ItemProductBinding
@@ -31,10 +34,19 @@ class ProductPagingAdapter :
                 priceText.text = "₹${product.price}"
                 priceText.setTextColor(root.context.getColor(R.color.green))
 
+
                 Glide.with(root.context)
                     .load(product.images.firstOrNull())
+                    .thumbnail(
+                        Glide.with(root.context).load(product.images.firstOrNull())
+                    )
+                    .priority(Priority.HIGH)
+                    .skipMemoryCache(false)
+                    .placeholder(R.color.divider)
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .placeholder(R.color.divider)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(productImage)
-
 
                 quantityLayout.isSelected = false
                 quantityText.text = "ADD"

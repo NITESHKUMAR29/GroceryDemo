@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -28,7 +29,7 @@ import kotlinx.coroutines.launch
 class AllFragment : Fragment() {
 
     private lateinit var binding: FragmentAllBinding
-    private val viewModel: ProductListViewModel by viewModels()
+    private val viewModel: ProductListViewModel by activityViewModels()
     private lateinit var adapter: ProductPagingAdapter
 
     override fun onCreateView(
@@ -44,7 +45,12 @@ class AllFragment : Fragment() {
 
         setupAdapter()
         observeProducts()
-        viewModel.loadProducts(categoryId = 1)
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.loadProducts(categoryId = 0)
     }
 
     private fun setupAdapter() {

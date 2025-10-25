@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.grocery">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".MainApplicationClass"
@@ -16,6 +16,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GroceryApp"
         tools:targetApi="31">
+        <activity
+            android:name=".uis.activities.AddProductActivity"
+            android:exported="false" />
+
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
@@ -26,11 +30,13 @@
                 android:value="androidx.startup"
                 tools:node="remove" />
         </provider>
+
         <activity
             android:name=".uis.activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

@@ -45,4 +45,10 @@ dependencies {
     kapt(libs.hilt.android.compiler)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    //OkHttp
+    implementation(libs.okhttp)
+
+    // OkHttp Logging Interceptor
+    implementation(libs.logging.interceptor)
 }

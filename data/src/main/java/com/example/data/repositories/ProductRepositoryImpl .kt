@@ -9,6 +9,7 @@ import com.example.data.paging.ProductPagingSource
 import com.example.domain.models.Product
 import com.example.domain.repositories.ProductRepository
 import kotlinx.coroutines.flow.Flow
+import okhttp3.MultipartBody
 import javax.inject.Inject
 
 class ProductRepositoryImpl @Inject constructor(
@@ -26,4 +27,39 @@ class ProductRepositoryImpl @Inject constructor(
             pagingSourceFactory = { ProductPagingSource(api, mapper, categoryId) }
         ).flow
     }
+
+    override suspend fun uploadImage(image: MultipartBody.Part): String {
+        val response = api.uploadImage(image)
+        if (response.isSuccessful) {
+            return response.body()?.location
+                ?: throw Exception("Upload failed: location is null")
+        } else {
+            throw Exception("Upload failed: ${response.message()}")
+        }
+    }
+
+    override fun getAllProducts(): Flow<PagingData<Product>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false,
+                prefetchDistance = 2
+            ),
+            pagingSourceFactory = { ProductPagingSource(api, mapper) }
+        ).flow
+    }
+
+    override suspend fun addProduct(product: Product): Product {
+        val dto = mapper.toDto(product)
+        val response = api.addProduct(dto)
+        if (response.isSuccessful) {
+            return mapper.toDomain(response.body()!!)
+        } else {
+
+            val errorBody = response.errorBody()?.string()
+            throw Exception("Product creation failed: $errorBody")
+        }
+    }
+
+
 }

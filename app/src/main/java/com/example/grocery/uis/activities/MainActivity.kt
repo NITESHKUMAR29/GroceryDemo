@@ -1,6 +1,7 @@
 package com.example.grocery.uis.activities
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.ImageView
@@ -32,13 +33,17 @@ private lateinit var binding: ActivityMainBinding
         enableEdgeToEdge()
         binding=DataBindingUtil.setContentView(this,R.layout.activity_main)
         setupTabs(binding.tabBar)
+        binding.fabAddProduct.setOnClickListener {
+            val intent = Intent(this, AddProductActivity::class.java)
+            startActivity(intent)
+        }
 
     }
 
     private fun setupTabs(tabLayout: TabLayout) {
         val tabs = listOf("All", "Grocery", "Stationary", "Sweets")
 
-        // Add an image for each tab
+
         val tabIcons = mapOf(
             "All" to R.drawable.grocery,
             "Grocery" to R.drawable.grocery,

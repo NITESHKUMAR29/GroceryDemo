@@ -9,7 +9,7 @@ import com.example.domain.models.Product
 class ProductPagingSource(
     private val api: ProductApiService,
     private val mapper: ProductMapper,
-    private val categoryId: Int
+    private val categoryId: Int? = null
 ) : PagingSource<Int, Product>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Product> {
@@ -17,7 +17,12 @@ class ProductPagingSource(
         val limit = params.loadSize
 
         return try {
-            val response = api.getProducts(categoryId, offset, limit)
+            val response = if (categoryId == null) {
+                api.getAllProduct(offset, limit)
+            } else {
+                api.getProducts(categoryId, offset, limit)
+            }
+
             if (response.isSuccessful) {
                 val body = response.body().orEmpty()
                 val products = body.map { mapper.toDomain(it) }

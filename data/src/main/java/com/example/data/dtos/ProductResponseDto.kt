@@ -6,7 +6,7 @@ data class ProductDto(
     val slug: String?,
     val price: Int?,
     val description: String?,
-    val category: CategoryDto?,
+    val categoryId: Int?,
     val images: List<String>?,
     val creationAt: String?,
     val updatedAt: String?
