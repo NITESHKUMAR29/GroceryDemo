@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.CleanArchitectureBasicNewsApp"
+        android:theme="@style/Theme.GroceryApp"
         tools:targetApi="31">
         <provider
             android:name="androidx.startup.InitializationProvider"
@@ -27,7 +27,7 @@
                 tools:node="remove" />
         </provider>
         <activity
-            android:name=".newsList.NewsListActivity"
+            android:name=".uis.activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

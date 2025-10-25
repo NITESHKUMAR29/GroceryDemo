@@ -1,7 +1,7 @@
 package com.example.data.di
 
-import com.example.data.mappers.NewsLocalMapper
-import com.example.data.mappers.NewsMapper
+
+import com.example.data.mappers.ProductMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,10 +15,10 @@ object MapperModule {
 
     @Provides
     @Singleton
-    fun provideNewsMapper(): NewsMapper = NewsMapper()
+    fun provideNewsMapper(): ProductMapper = ProductMapper()
 
-    @Singleton
-    @Provides
-    fun provideNewsLocalMapper(): NewsLocalMapper = NewsLocalMapper()
+//    @Singleton
+//    @Provides
+//    fun provideNewsLocalMapper(): NewsLocalMapper = NewsLocalMapper()
 
 }

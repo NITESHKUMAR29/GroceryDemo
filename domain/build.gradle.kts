@@ -39,6 +39,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(libs.androidx.paging.common.android)
     testImplementation(libs.junit)
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)

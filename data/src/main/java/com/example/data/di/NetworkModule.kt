@@ -1,10 +1,7 @@
 package com.example.data.di
 
-import com.example.data.apis.NewsApiService
-import com.example.data.mappers.NewsMapper
-import com.example.data.repositories.NewsRepositoryImpl
-import com.example.domain.repositories.NewsRepository
-import dagger.Binds
+
+import com.example.data.apis.ProductApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,15 +17,14 @@ class NetworkModule {
     @Provides
     @Singleton
     fun provideNewsRetrofit(): Retrofit =
-        Retrofit.Builder().baseUrl("https://newsapi.org/").addConverterFactory(
+        Retrofit.Builder().baseUrl(" https://api.escuelajs.co").addConverterFactory(
             GsonConverterFactory.create()
         ).build()
 
     @Provides
     @Singleton
-    fun provideNewsApiService(retrofit: Retrofit): NewsApiService =
-        retrofit.create(NewsApiService::class.java)
-
+    fun provideNewsApiService(retrofit: Retrofit): ProductApiService =
+        retrofit.create(ProductApiService::class.java)
 
 
 }
