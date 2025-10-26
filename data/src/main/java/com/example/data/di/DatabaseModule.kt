@@ -2,8 +2,8 @@ package com.example.data.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.data.local.NewsDatabase
-import com.example.data.local.dao.NewsDao
+import com.example.data.local.CartDatabase
+import com.example.data.local.dao.CartDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,14 +19,14 @@ object DatabaseModule {
     @Singleton
     fun provideDatabase(
         @ApplicationContext context: Context
-    ): NewsDatabase {
+    ): CartDatabase {
         return Room.databaseBuilder(
             context,
-            NewsDatabase::class.java,
+            CartDatabase::class.java,
             "news_db"
         ).build()
     }
 
     @Provides
-    fun provideNewsDao(db: NewsDatabase): NewsDao = db.newsDao()
+    fun provideNewsDao(db: CartDatabase): CartDao = db.cartDao()
 }

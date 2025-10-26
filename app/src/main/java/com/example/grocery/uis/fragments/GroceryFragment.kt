@@ -53,7 +53,7 @@ class GroceryFragment : Fragment() {
     }
 
     private fun setupAdapter() {
-        adapter = ProductPagingAdapter()
+       adapter = ProductPagingAdapter(viewModel,viewLifecycleOwner)
 
 
         binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
@@ -83,5 +83,6 @@ class GroceryFragment : Fragment() {
             }
         }
     }
+
 
 }

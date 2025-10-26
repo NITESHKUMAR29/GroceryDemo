@@ -4,14 +4,21 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.example.domain.models.CartItem
 import com.example.domain.models.Product
+import com.example.domain.repositories.CartRepository
 import com.example.domain.repositories.ProductRepository
 import com.example.domain.useCases.GetProductsByCategoryUseCase
+import com.example.domain.useCases.SearchNewsUseCase
 import com.example.grocery.states.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -22,7 +29,10 @@ import javax.inject.Inject
 @HiltViewModel
 class ProductListViewModel @Inject constructor(
     private val getProductsByCategoryUseCase: GetProductsByCategoryUseCase,
-    private val repository: ProductRepository
+    private val searchNewsUseCase: SearchNewsUseCase,
+
+    private val repository: ProductRepository,
+    private val cartRepository: CartRepository
 ) : ViewModel() {
 
     private val _products = MutableStateFlow<PagingData<Product>>(PagingData.empty())
@@ -33,6 +43,17 @@ class ProductListViewModel @Inject constructor(
 
     private val _createProductState = MutableStateFlow<UiState<Product>>(UiState.Loading)
     val createProductState = _createProductState.asStateFlow()
+
+    private val _cartItems = MutableStateFlow<List<CartItem>>(emptyList())
+    val cartItems: StateFlow<List<CartItem>> = _cartItems.asStateFlow()
+
+    private val _searchProductState = MutableStateFlow<UiState<List<Product>>>(UiState.Loading)
+    val searchProductState: StateFlow<UiState<List<Product>>> = _searchProductState
+
+    init {
+        observeCartItems()
+    }
+
 
     fun uploadImage(file: File) = viewModelScope.launch {
         _uploadImageState.value = UiState.Loading
@@ -52,9 +73,11 @@ class ProductListViewModel @Inject constructor(
             val created = repository.addProduct(product)
             _createProductState.value = UiState.Success(created)
         } catch (e: Exception) {
-            _createProductState.value = UiState.Error(e.localizedMessage ?: "Product creation failed")
+            _createProductState.value =
+                UiState.Error(e.localizedMessage ?: "Product creation failed")
         }
     }
+
     fun loadProducts(categoryId: Int) {
         viewModelScope.launch {
             getProductsByCategoryUseCase(categoryId)
@@ -65,5 +88,34 @@ class ProductListViewModel @Inject constructor(
         }
     }
 
+    fun getProductQuantity(productId: Int): Flow<Int> {
+        return cartRepository.getCartItem(productId).map { it?.quantity ?: 0 }
+    }
+
+    fun updateProductQuantity(product: Product, quantity: Int) = viewModelScope.launch {
+        val item = CartItem(
+            productId = product.id,
+            title = product.title,
+            price = product.price,
+            image = product.images.firstOrNull(),
+            quantity = quantity
+        )
+        cartRepository.updateCartItem(item)
+    }
+
+    private fun observeCartItems() {
+        viewModelScope.launch {
+            cartRepository.getAllCartItems().collect { items ->
+                _cartItems.value = items
+            }
+        }
+    }
+
+    fun searchProducts(query: String) = viewModelScope.launch {
+        searchNewsUseCase(query)
+            .onStart { _searchProductState.value = UiState.Loading }
+            .catch { _searchProductState.value = UiState.Error(it.message.toString()) }
+            .collect { _searchProductState.value = UiState.Success(it) }
+    }
 
 }

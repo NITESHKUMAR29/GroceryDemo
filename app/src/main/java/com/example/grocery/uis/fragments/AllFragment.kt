@@ -46,6 +46,7 @@ class AllFragment : Fragment() {
         setupAdapter()
         observeProducts()
 
+
     }
 
     override fun onResume() {
@@ -54,7 +55,7 @@ class AllFragment : Fragment() {
     }
 
     private fun setupAdapter() {
-        adapter = ProductPagingAdapter()
+        adapter = ProductPagingAdapter(viewModel,viewLifecycleOwner)
 
 
         binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
@@ -73,6 +74,7 @@ class AllFragment : Fragment() {
             }
         }
     }
+
 
 
     private fun observeProducts() {

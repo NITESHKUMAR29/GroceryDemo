@@ -82,11 +82,57 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
-            android:layout_margin="16dp"
-
+            android:layout_margin="10dp"
             app:backgroundTint="@color/colorAccent"
             app:srcCompat="@drawable/outline_add_24"
             app:tint="@android:color/white" />
+
+        <LinearLayout
+            android:id="@+id/bottomCartLayout"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="50dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:backgroundTint="@color/colorAccent"
+            android:clipToOutline="true"
+            android:visibility="gone"
+            android:elevation="8dp"
+            android:layout_marginHorizontal="70dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:background="@drawable/bg_mini_cart">
+
+            <TextView
+                android:id="@+id/cartQuantityText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0 Items"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/viewCartButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp"
+                android:text="View Cart"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:backgroundTint="@android:color/white"
+                android:background="@drawable/bg_view_cart_button" />
+        </LinearLayout>
+
+
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

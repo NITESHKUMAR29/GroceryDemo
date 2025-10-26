@@ -26,6 +26,10 @@ interface ProductApiService {
         @Query("limit") limit: Int
     ): Response<List<ProductDto>>
 
+    @GET("api/v1/products/")
+    suspend fun searchProduct(
+    ): Response<List<ProductDto>>
+
     @Multipart
     @POST("api/v1/files/upload")
     suspend fun uploadImage(

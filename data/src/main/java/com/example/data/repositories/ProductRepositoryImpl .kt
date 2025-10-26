@@ -9,6 +9,7 @@ import com.example.data.paging.ProductPagingSource
 import com.example.domain.models.Product
 import com.example.domain.repositories.ProductRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import okhttp3.MultipartBody
 import javax.inject.Inject
 
@@ -47,6 +48,31 @@ class ProductRepositoryImpl @Inject constructor(
             ),
             pagingSourceFactory = { ProductPagingSource(api, mapper) }
         ).flow
+    }
+
+    override fun searchProducts(query: String): Flow<List<Product>> {
+        return flow {
+            val response=api.searchProduct()
+
+            try {
+                if (response.isSuccessful) {
+                    val products = response.body()?.map { mapper.toDomain(it) }
+                    if (products != null) {
+                        emit(products)
+                    }
+
+                }else{
+                    val errorBody = response.errorBody()?.string()
+                    throw Exception("API Error: $errorBody")
+
+                }
+            } catch (e:Exception){
+                throw e
+            }
+
+        }
+
+
     }
 
     override suspend fun addProduct(product: Product): Product {

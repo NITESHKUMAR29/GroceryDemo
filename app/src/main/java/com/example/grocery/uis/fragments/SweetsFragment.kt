@@ -49,7 +49,7 @@ class SweetsFragment : Fragment() {
     }
 
     private fun setupAdapter() {
-        adapter = ProductPagingAdapter()
+       adapter = ProductPagingAdapter(viewModel,viewLifecycleOwner)
         binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
         binding.recyclerView.adapter = adapter.withLoadStateHeaderAndFooter(
             header = ProductLoadStateAdapter { adapter.retry() },
@@ -77,4 +77,6 @@ class SweetsFragment : Fragment() {
             }
         }
     }
+
+
 }

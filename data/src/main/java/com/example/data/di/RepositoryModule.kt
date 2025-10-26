@@ -1,6 +1,8 @@
 package com.example.data.di
 
+import com.example.data.repositories.CartRepositoryImpl
 import com.example.data.repositories.ProductRepositoryImpl
+import com.example.domain.repositories.CartRepository
 import com.example.domain.repositories.ProductRepository
 import dagger.Binds
 import dagger.Module
@@ -17,4 +19,10 @@ abstract class RepositoryModule {
     abstract fun bindNewsRepository(
         impl: ProductRepositoryImpl
     ): ProductRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindCartRepository(
+        impl: CartRepositoryImpl
+    ): CartRepository
 }

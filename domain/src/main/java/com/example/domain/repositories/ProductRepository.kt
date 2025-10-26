@@ -10,4 +10,5 @@ interface ProductRepository {
     suspend fun addProduct(product: Product): Product
     suspend fun uploadImage(image: MultipartBody.Part): String
     fun getAllProducts(): Flow<PagingData<Product>>
+    fun searchProducts(query: String): Flow<List<Product>>
 }

@@ -21,14 +21,6 @@ class ProductMapper {
         updatedAt = dto.updatedAt ?: ""
     )
 
-    private fun toDomain(categoryDto: CategoryDto): Category = Category(
-        id = categoryDto.id ?: 0,
-        name = categoryDto.name ?: "",
-        slug = categoryDto.slug ?: "",
-        image = categoryDto.image ?: "",
-        creationAt = categoryDto.creationAt ?: "",
-        updatedAt = categoryDto.updatedAt ?: ""
-    )
 
     fun toDto(domain: Product): ProductDto = ProductDto(
         id = domain.id,
@@ -42,12 +34,4 @@ class ProductMapper {
         updatedAt = domain.updatedAt
     )
 
-    private fun toDto(category: Category): CategoryDto = CategoryDto(
-        id = category.id,
-        name = category.name,
-        slug = category.slug,
-        image = category.image,
-        creationAt = category.creationAt,
-        updatedAt = category.updatedAt
-    )
 }
