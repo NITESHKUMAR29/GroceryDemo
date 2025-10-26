@@ -15,7 +15,7 @@ class ProductMapper {
         slug = dto.slug ?: "",
         price = dto.price ?: 0,
         description = dto.description ?: "",
-        category = Category(dto.categoryId ?: 0, "", "", "", "", ""),
+        category = Category(dto.categoryId ?: 0, ""),
         images = dto.images ?: emptyList(),
         creationAt = dto.creationAt ?: "",
         updatedAt = dto.updatedAt ?: ""

@@ -33,7 +33,7 @@
                 android:layout_height="28dp"
                 android:orientation="horizontal"
                 android:gravity="center"
-                android:paddingHorizontal="16dp"
+                android:paddingHorizontal="4dp"
                 android:layout_marginEnd="2dp"
                 android:layout_marginBottom="2dp"
                 app:layout_constraintBottom_toBottomOf="@id/productImage"
@@ -43,7 +43,7 @@
 
                 <TextView
                     android:id="@+id/minusButton"
-                    android:layout_width="wrap_content"
+                    android:layout_width="20dp"
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:text="-"
@@ -64,10 +64,10 @@
                     android:textColor="@color/colorAccent"
                     android:paddingHorizontal="6dp"/>
 
-                <!-- Plus Button -->
+
                 <TextView
                     android:id="@+id/plusButton"
-                    android:layout_width="wrap_content"
+                    android:layout_width="20dp"
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:text="+"
@@ -129,6 +129,7 @@
                 android:textColor="@android:color/white"
                 android:background="@drawable/tag_background"
                 android:paddingHorizontal="6dp"
+                android:visibility="gone"
                 android:paddingVertical="2dp"
                 app:layout_constraintTop_toTopOf="@id/productImage"
                 app:layout_constraintEnd_toEndOf="@id/productImage" />

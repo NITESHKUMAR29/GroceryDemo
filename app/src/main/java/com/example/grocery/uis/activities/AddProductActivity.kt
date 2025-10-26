@@ -15,13 +15,16 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.domain.models.Category
 import com.example.domain.models.Product
 import com.example.grocery.R
 import com.example.grocery.databinding.ActivityAddProductBinding
 import com.example.grocery.viewModels.ProductListViewModel
 import com.example.grocery.states.UiState
+import com.example.grocery.utility.CategoryIds
 import dagger.hilt.android.AndroidEntryPoint
 import id.zelory.compressor.Compressor
 import kotlinx.coroutines.flow.collectLatest
@@ -33,16 +36,10 @@ class AddProductActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAddProductBinding
     private val viewModel: ProductListViewModel by viewModels()
-
+    private var categoryList: List<Category> = emptyList()
     private var selectedImageUri: Uri? = null
     private var uploadedImageUrl: String? = null
 
-    // Category mapping
-    private val categoryMap = mapOf(
-        "Grocery" to 47,
-        "Stationary" to 48,
-        "Sweets" to 49
-    )
     private var selectedCategoryId: Int? = null
 
     private val pickImageLauncher = registerForActivityResult(
@@ -60,34 +57,64 @@ class AddProductActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_product)
+        viewModel.getCategories()
+        observeCategories()
 
-        setupCategorySpinner()
         binding.btnUploadImage.setOnClickListener { openGallery() }
         binding.btnCreateProduct.setOnClickListener { createProduct() }
-
         observeUploadState()
         observeCreateProductState()
     }
 
-    private fun setupCategorySpinner() {
-        val categoryNames = categoryMap.keys.toList()
+    private fun observeCategories() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.productCategoryState.collect { state ->
+                    when (state) {
+                        is UiState.Success -> {
+
+                            categoryList = state.data.filter { it.name in listOf("Grocery", "Stationary", "Sweets") }
+
+                            Log.d("CategoryStateProductAddActivity",CategoryIds.GROCERY.toString())
+                            setupCategorySpinner(categoryList)
+                        }
+                        is UiState.Error -> {
+                            Toast.makeText(this@AddProductActivity, state.message, Toast.LENGTH_SHORT).show()
+                        }
+                        UiState.Loading -> {}
+                        UiState.Idle -> {}
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setupCategorySpinner(categories: List<Category>) {
+        val categoryNames = categories.map { it.name }
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categoryNames)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerCategory.adapter = adapter
 
-        // Default selection
-        binding.spinnerCategory.setSelection(0)
-        selectedCategoryId = categoryMap[categoryNames[0]]
-
-        binding.spinnerCategory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                selectedCategoryId = categoryMap[categoryNames[position]]
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                selectedCategoryId = null
-            }
+        if (categories.isNotEmpty()) {
+            binding.spinnerCategory.setSelection(0)
+            selectedCategoryId = categories[0].id
         }
+
+        binding.spinnerCategory.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    selectedCategoryId = categories[position].id
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {
+                    selectedCategoryId = null
+                }
+            }
     }
 
     private fun openGallery() {
@@ -180,7 +207,7 @@ class AddProductActivity : AppCompatActivity() {
             title = title,
             price = price,
             description = description,
-            category = Category(categoryId, "", "", "", "", ""),
+            category = Category(categoryId, "", ),
             images = listOf(uploadedImageUrl ?: ""),
             creationAt = "",
             updatedAt = ""

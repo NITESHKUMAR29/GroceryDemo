@@ -1,10 +1,10 @@
 package com.example.grocery.uis.activities
 
+import android.animation.ArgbEvaluator
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,31 +13,33 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.example.grocery.R
-import com.example.grocery.baseSupport.BaseActivity
 import com.example.grocery.databinding.ActivityMainBinding
-import com.example.grocery.viewModels.ProductListViewModel
-import com.example.grocery.states.UiState
 import com.example.grocery.uis.fragments.AllFragment
 import com.example.grocery.uis.fragments.GroceryFragment
 import com.example.grocery.uis.fragments.StationaryFragment
 import com.example.grocery.uis.fragments.SweetsFragment
+import com.example.grocery.viewModels.ProductListViewModel
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import androidx.core.graphics.toColorInt
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
+import com.example.grocery.states.UiState
+import com.example.grocery.utility.CategoryIds
+import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
-class MainActivity : BaseActivity() {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val viewModel: ProductListViewModel by viewModels()
@@ -53,12 +55,65 @@ class MainActivity : BaseActivity() {
         enableEdgeToEdge()
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         setupTabs(binding.tabBar)
+
         binding.fabAddProduct.setOnClickListener {
             val intent = Intent(this, AddProductActivity::class.java)
             startActivity(intent)
         }
 
+        binding.mainToolbar.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
+            var scrollRange = -1
+            val collapsedColor = ContextCompat.getColor(this@MainActivity, R.color.light_gray)
+            val expandedColor = "#003F94".toColorInt()
+
+            override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout?.totalScrollRange ?: 0
+                }
+
+                val fraction = -verticalOffset / scrollRange.toFloat()
+
+
+                val bgColor = ArgbEvaluator().evaluate(fraction, expandedColor, collapsedColor) as Int
+                binding.mainToolbar.setBackgroundColor(bgColor)
+                binding.tabBar.setBackgroundColor(bgColor)
+
+
+                val indicatorColor = ArgbEvaluator().evaluate(
+                    fraction,
+                    ContextCompat.getColor(this@MainActivity, R.color.white),
+                    ContextCompat.getColor(this@MainActivity, R.color.black)
+                ) as Int
+                binding.tabBar.setSelectedTabIndicatorColor(indicatorColor)
+
+
+                val selectedColor = ArgbEvaluator().evaluate(
+                    fraction,
+                    ContextCompat.getColor(this@MainActivity, R.color.white),
+                    ContextCompat.getColor(this@MainActivity, R.color.black)
+                ) as Int
+                val unselectedColor = ArgbEvaluator().evaluate(
+                    fraction,
+                    ContextCompat.getColor(this@MainActivity, R.color.text_secondary_light),
+                    ContextCompat.getColor(this@MainActivity, R.color.text_secondary_light)
+                ) as Int
+
+                for (i in 0 until binding.tabBar.tabCount) {
+                    val tab = binding.tabBar.getTabAt(i)
+                    val textView = tab?.customView?.findViewById<TextView>(R.id.page_text)
+                    textView?.setTextColor(if (tab.isSelected) selectedColor else unselectedColor)
+                }
+
+
+                val textColor = ArgbEvaluator().evaluate(fraction, Color.WHITE, Color.BLACK) as Int
+                binding.appTitle.setTextColor(textColor)
+                binding.locationText.setTextColor(textColor)
+            }
+        })
+
+        viewModel.getCategories()
         observeCart()
+        observeCategories()
 
         binding.searchProduct.setOnClickListener {
             val intent = Intent(this, SearchActivity::class.java)
@@ -92,7 +147,6 @@ class MainActivity : BaseActivity() {
             textView.text = tabTitle
             tabIcons[tabTitle]?.let { imageView.setImageResource(it) }
 
-
             view.layoutParams =
                 LinearLayout.LayoutParams(tabWidth, LinearLayout.LayoutParams.WRAP_CONTENT)
 
@@ -102,16 +156,18 @@ class MainActivity : BaseActivity() {
 
         tabLayout.tabMode = TabLayout.MODE_FIXED
 
-
         loadFragment("All")
-
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 val title = tab.customView?.findViewById<TextView>(R.id.page_text)?.text.toString()
                 loadFragment(title)
+
                 tab.customView?.findViewById<TextView>(R.id.page_text)
                     ?.setTextColor(ContextCompat.getColor(this@MainActivity, R.color.white))
+
+
+                binding.mainToolbar.setExpanded(true, true)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {
@@ -119,9 +175,12 @@ class MainActivity : BaseActivity() {
                     ?.setTextColor(ContextCompat.getColor(this@MainActivity, R.color.white_50))
             }
 
-            override fun onTabReselected(tab: TabLayout.Tab) {}
+            override fun onTabReselected(tab: TabLayout.Tab) {
+                binding.mainToolbar.setExpanded(true, true)
+            }
         })
     }
+
 
 
     @SuppressLint("CommitTransaction")
@@ -179,6 +238,23 @@ class MainActivity : BaseActivity() {
         }
     }
 
-
+    private fun observeCategories(){
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.productCategoryState.collect { state ->
+                    if (state is UiState.Success) {
+                        val categories = state.data
+                        categories.forEach { category ->
+                            when (category.name) {
+                                "Grocery" -> CategoryIds.GROCERY = category.id
+                                "Stationary" -> CategoryIds.STATIONARY = category.id
+                                "Sweets" -> CategoryIds.SWEETS = category.id
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 }

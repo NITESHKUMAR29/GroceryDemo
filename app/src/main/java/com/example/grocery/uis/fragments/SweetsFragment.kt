@@ -19,6 +19,7 @@ import com.example.grocery.databinding.FragmentSweetsBinding
 import com.example.grocery.viewModels.ProductListViewModel
 import com.example.grocery.uis.adapters.ProductLoadStateAdapter
 import com.example.grocery.uis.adapters.ProductPagingAdapter
+import com.example.grocery.utility.CategoryIds
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -46,7 +47,7 @@ class SweetsFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.loadProducts(categoryId = 49)
+        viewModel.loadProducts(categoryId = CategoryIds.SWEETS)
     }
 
     private fun setupAdapter() {

@@ -1,6 +1,7 @@
 package com.example.grocery.uis.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +20,7 @@ import com.example.grocery.databinding.FragmentGroceryBinding
 import com.example.grocery.viewModels.ProductListViewModel
 import com.example.grocery.uis.adapters.ProductLoadStateAdapter
 import com.example.grocery.uis.adapters.ProductPagingAdapter
+import com.example.grocery.utility.CategoryIds
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -49,7 +51,8 @@ class GroceryFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.loadProducts(categoryId = 47)
+        Log.d("CategoryStateGrocerryFragment",CategoryIds.GROCERY.toString())
+        viewModel.loadProducts(categoryId = CategoryIds.GROCERY)
     }
 
     private fun setupAdapter() {

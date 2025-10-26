@@ -14,10 +14,6 @@ data class ProductDto(
 
 data class CategoryDto(
     val id: Int?,
-    val name: String?,
-    val slug: String?,
-    val image: String?,
-    val creationAt: String?,
-    val updatedAt: String?
+    val name: String?
 )
 

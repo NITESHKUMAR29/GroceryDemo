@@ -40,7 +40,7 @@ class CartActivity : BaseActivity() {
                     description = "",
                     images = listOf(item.image ?: ""),
                     slug = "",
-                    category = Category(0, "", "", "", "", ""),
+                    category = Category(0, "",),
                     creationAt = "",
                     updatedAt = ""
                 ),

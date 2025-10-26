@@ -1,6 +1,7 @@
 package com.example.domain.repositories
 
 import androidx.paging.PagingData
+import com.example.domain.models.Category
 import com.example.domain.models.Product
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
@@ -11,4 +12,5 @@ interface ProductRepository {
     suspend fun uploadImage(image: MultipartBody.Part): String
     fun getAllProducts(): Flow<PagingData<Product>>
     fun searchProducts(query: String): Flow<List<Product>>
+    fun getProductCategories(): Flow<List<Category>>
 }

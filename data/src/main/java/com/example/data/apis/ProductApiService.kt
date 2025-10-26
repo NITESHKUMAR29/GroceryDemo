@@ -1,5 +1,6 @@
 package com.example.data.apis
 
+import com.example.data.dtos.CategoryDto
 import com.example.data.dtos.ProductDto
 import com.example.data.dtos.UploadImageResponse
 import okhttp3.MultipartBody
@@ -29,6 +30,10 @@ interface ProductApiService {
     @GET("api/v1/products/")
     suspend fun searchProduct(
     ): Response<List<ProductDto>>
+
+    @GET("/api/v1/categories/")
+    suspend fun getCategories(
+    ): Response<List<CategoryDto>>
 
     @Multipart
     @POST("api/v1/files/upload")

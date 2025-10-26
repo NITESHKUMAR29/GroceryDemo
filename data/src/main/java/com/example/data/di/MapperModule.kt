@@ -2,6 +2,7 @@ package com.example.data.di
 
 
 import com.example.data.mappers.CartMapper
+import com.example.data.mappers.ProductCategoryMapper
 import com.example.data.mappers.ProductMapper
 import dagger.Module
 import dagger.Provides
@@ -16,9 +17,15 @@ object MapperModule {
 
     @Provides
     @Singleton
-    fun provideNewsMapper(): ProductMapper = ProductMapper()
+    fun provideProductMapper(): ProductMapper = ProductMapper()
 
     @Provides
+    @Singleton
     fun provideCartMapper(): CartMapper = CartMapper()
+
+    @Provides
+    @Singleton
+    fun provideProductCategoryMapper(): ProductCategoryMapper = ProductCategoryMapper()
+
 
 }

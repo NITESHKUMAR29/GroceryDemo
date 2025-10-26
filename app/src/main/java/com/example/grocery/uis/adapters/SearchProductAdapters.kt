@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -47,6 +48,14 @@ class SearchProductAdapters(
                 titleText.text = product.title
                 priceText.text = "₹${product.price}"
                 priceText.setTextColor(root.context.getColor(R.color.green))
+
+                val showTag = (0..1).random() == 1
+                binding.tagText.isVisible = showTag
+
+                if (showTag) {
+                    val tags = listOf("Bestseller", "Hot Deal", "Limited", "Trending")
+                    binding.tagText.text = tags.random()
+                }
 
                 Glide.with(root.context)
                     .load(product.images.firstOrNull())

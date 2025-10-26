@@ -6,10 +6,12 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.domain.models.CartItem
+import com.example.domain.models.Category
 import com.example.domain.models.Product
 import com.example.domain.repositories.CartRepository
 import com.example.domain.repositories.ProductRepository
 import com.example.domain.useCases.GetProductsByCategoryUseCase
+import com.example.domain.useCases.ProductCategoryUseCase
 import com.example.domain.useCases.SearchNewsUseCase
 import com.example.grocery.states.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,6 +33,7 @@ import javax.inject.Inject
 class ProductListViewModel @Inject constructor(
     private val getProductsByCategoryUseCase: GetProductsByCategoryUseCase,
     private val searchNewsUseCase: SearchNewsUseCase,
+    private val productCategoryUseCase: ProductCategoryUseCase,
 
     private val repository: ProductRepository,
     private val cartRepository: CartRepository
@@ -39,10 +42,10 @@ class ProductListViewModel @Inject constructor(
     private val _products = MutableStateFlow<PagingData<Product>>(PagingData.empty())
     val products: StateFlow<PagingData<Product>> = _products.asStateFlow()
 
-    private val _uploadImageState = MutableStateFlow<UiState<String>>(UiState.Loading)
+    private val _uploadImageState = MutableStateFlow<UiState<String>>(UiState.Idle)
     val uploadImageState = _uploadImageState.asStateFlow()
 
-    private val _createProductState = MutableStateFlow<UiState<Product>>(UiState.Loading)
+    private val _createProductState = MutableStateFlow<UiState<Product>>(UiState.Idle)
     val createProductState = _createProductState.asStateFlow()
 
     private val _cartItems = MutableStateFlow<List<CartItem>>(emptyList())
@@ -50,6 +53,9 @@ class ProductListViewModel @Inject constructor(
 
     private val _searchProductState = MutableStateFlow<UiState<List<Product>>>(UiState.Idle)
     val searchProductState: StateFlow<UiState<List<Product>>> = _searchProductState
+
+    private val _productCategoryState = MutableStateFlow<UiState<List<Category>>>(UiState.Idle)
+    val productCategoryState: StateFlow<UiState<List<Category>>> = _productCategoryState
 
     init {
         observeCartItems()
@@ -122,5 +128,12 @@ class ProductListViewModel @Inject constructor(
         }
     }
 
+    fun getCategories() = viewModelScope.launch {
+            productCategoryUseCase()
+                .onStart { _productCategoryState.value = UiState.Loading }
+                .catch { _productCategoryState.value = UiState.Error(it.message.toString()) }
+                .collect { _productCategoryState.value = UiState.Success(it) }
+
+    }
 
 }
