@@ -1,5 +1,6 @@
-package com.example.grocery.productList
+package com.example.grocery.viewModels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -47,7 +48,7 @@ class ProductListViewModel @Inject constructor(
     private val _cartItems = MutableStateFlow<List<CartItem>>(emptyList())
     val cartItems: StateFlow<List<CartItem>> = _cartItems.asStateFlow()
 
-    private val _searchProductState = MutableStateFlow<UiState<List<Product>>>(UiState.Loading)
+    private val _searchProductState = MutableStateFlow<UiState<List<Product>>>(UiState.Idle)
     val searchProductState: StateFlow<UiState<List<Product>>> = _searchProductState
 
     init {
@@ -112,10 +113,14 @@ class ProductListViewModel @Inject constructor(
     }
 
     fun searchProducts(query: String) = viewModelScope.launch {
-        searchNewsUseCase(query)
-            .onStart { _searchProductState.value = UiState.Loading }
-            .catch { _searchProductState.value = UiState.Error(it.message.toString()) }
-            .collect { _searchProductState.value = UiState.Success(it) }
+        Log.d("searchProductQuery", query.isNotEmpty().toString())
+        if (query.isNotEmpty()) {
+            searchNewsUseCase(query)
+                .onStart { _searchProductState.value = UiState.Loading }
+                .catch { _searchProductState.value = UiState.Error(it.message.toString()) }
+                .collect { _searchProductState.value = UiState.Success(it) }
+        }
     }
+
 
 }

@@ -41,8 +41,8 @@
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 
 
-            <EditText
-                android:id="@+id/search_event"
+            <TextView
+                android:id="@+id/search_product"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_margin="16dp"

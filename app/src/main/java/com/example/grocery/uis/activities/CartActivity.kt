@@ -2,14 +2,13 @@ package com.example.grocery.uis.activities
 
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.domain.models.Category
 import com.example.domain.models.Product
 import com.example.grocery.baseSupport.BaseActivity
 import com.example.grocery.databinding.ActivityCartBinding
-import com.example.grocery.productList.ProductListViewModel
+import com.example.grocery.viewModels.ProductListViewModel
 import com.example.grocery.uis.adapters.CartAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest

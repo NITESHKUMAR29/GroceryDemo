@@ -53,7 +53,6 @@ class ProductRepositoryImpl @Inject constructor(
     override fun searchProducts(query: String): Flow<List<Product>> {
         return flow {
             val response=api.searchProduct()
-
             try {
                 if (response.isSuccessful) {
                     val products = response.body()?.map { mapper.toDomain(it) }
@@ -86,6 +85,5 @@ class ProductRepositoryImpl @Inject constructor(
             throw Exception("Product creation failed: $errorBody")
         }
     }
-
 
 }

@@ -23,7 +23,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.example.grocery.R
 import com.example.grocery.baseSupport.BaseActivity
 import com.example.grocery.databinding.ActivityMainBinding
-import com.example.grocery.productList.ProductListViewModel
+import com.example.grocery.viewModels.ProductListViewModel
 import com.example.grocery.states.UiState
 import com.example.grocery.uis.fragments.AllFragment
 import com.example.grocery.uis.fragments.GroceryFragment
@@ -41,7 +41,7 @@ class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val viewModel: ProductListViewModel by viewModels()
-    private var searchJob: Job? = null
+
 
 
     companion object {
@@ -59,29 +59,17 @@ class MainActivity : BaseActivity() {
         }
 
         observeCart()
-        observeSearch()
 
-        binding.searchEvent.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
+        binding.searchProduct.setOnClickListener {
+            val intent = Intent(this, SearchActivity::class.java)
+            startActivity(intent)
+        }
 
-            }
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                val query = p0.toString()
-                    debounceSearch(query)
-
-            }
-        })
 
     }
 
     private fun setupTabs(tabLayout: TabLayout) {
         val tabs = listOf("All", "Grocery", "Stationary", "Sweets")
-
 
         val tabIcons = mapOf(
             "All" to R.drawable.grocery,
@@ -167,25 +155,7 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    private fun observeSearch() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.searchProductState.collect { state ->
-                    Log.d("searchProductsss", state.toString())
-                    when (state) {
-                        is UiState.Error -> {}
-                        UiState.Loading -> {}
-                        is UiState.Success -> {
-                            Log.d("searchProductsss", state.data.toString())
-                        }
-                    }
-                }
-            }
 
-        }
-
-
-    }
 
 
     private fun updateMiniCartVisibility(show: Boolean) {
@@ -209,15 +179,6 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    private fun debounceSearch(query: String) {
-        searchJob?.cancel()
-        searchJob = lifecycleScope.launch {
-            delay(500)
-            if (query.isNotEmpty()) {
-                Log.d("searchProductsss", query)
-                viewModel.searchProducts(query)
-            }
-        }
-    }
+
 
 }

@@ -4,12 +4,8 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
-
-import androidx.paging.PagingDataAdapter
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.Priority
@@ -23,18 +19,23 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class ProductPagingAdapter(
-    private val viewModel: ProductListViewModel,
+class SearchProductAdapters(
+    private val productList: List<Product>, private val viewModel: ProductListViewModel,
     private val lifecycleOwners: LifecycleOwner
-) : PagingDataAdapter<Product, ProductPagingAdapter.ProductViewHolder>(DiffCallback) {
-    companion object DiffCallback : DiffUtil.ItemCallback<Product>() {
-        override fun areItemsTheSame(oldItem: Product, newItem: Product): Boolean =
-            oldItem.id == newItem.id
-
-        override fun areContentsTheSame(oldItem: Product, newItem: Product): Boolean =
-            oldItem == newItem
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val binding =
+            ItemProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ProductViewHolder(binding)
     }
 
+    override fun getItemCount(): Int {
+        return productList.size
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        (holder as ProductViewHolder).bind(productList[position])
+    }
 
     inner class ProductViewHolder(private val binding: ItemProductBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -105,15 +106,4 @@ class ProductPagingAdapter(
             }
         }
     }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
-        val binding =
-            ItemProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ProductViewHolder(binding)
-    }
-
-    override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
-        getItem(position)?.let { holder.bind(it) }
-    }
 }
-

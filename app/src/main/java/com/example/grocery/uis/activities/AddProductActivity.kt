@@ -20,7 +20,7 @@ import com.example.domain.models.Category
 import com.example.domain.models.Product
 import com.example.grocery.R
 import com.example.grocery.databinding.ActivityAddProductBinding
-import com.example.grocery.productList.ProductListViewModel
+import com.example.grocery.viewModels.ProductListViewModel
 import com.example.grocery.states.UiState
 import dagger.hilt.android.AndroidEntryPoint
 import id.zelory.compressor.Compressor
@@ -157,9 +157,12 @@ class AddProductActivity : AppCompatActivity() {
                         submitProduct()
                     }
                     is UiState.Error -> {
+                        Toast.makeText(this@AddProductActivity, state.message, Toast.LENGTH_SHORT).show()
                         binding.progressBar.isVisible = false
                         Toast.makeText(this@AddProductActivity, state.message, Toast.LENGTH_SHORT).show()
                     }
+
+                    else -> {}
                 }
             }
         }
@@ -199,9 +202,12 @@ class AddProductActivity : AppCompatActivity() {
                         finish()
                     }
                     is UiState.Error -> {
+                        Toast.makeText(this@AddProductActivity, state.message, Toast.LENGTH_SHORT).show()
                         binding.progressBar.isVisible = false
                         Toast.makeText(this@AddProductActivity, state.message, Toast.LENGTH_SHORT).show()
                     }
+
+                    else -> {}
                 }
             }
         }
