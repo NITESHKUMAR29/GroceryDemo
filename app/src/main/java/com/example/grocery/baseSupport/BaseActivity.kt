@@ -15,7 +15,7 @@ open class BaseActivity : AppCompatActivity() {
 
     override fun onContentChanged() {
         super.onContentChanged()
-        // ✅ Apply insets to the root content view after layout is set
+
         applyEdgeToEdge(findViewById(android.R.id.content))
     }
 
@@ -25,7 +25,7 @@ open class BaseActivity : AppCompatActivity() {
         ViewCompat.setOnApplyWindowInsetsListener(content) { view, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 
-            // ✅ Apply safe padding to root view
+
             view.updatePadding(
                 left = systemBars.left,
                 top = systemBars.top,
