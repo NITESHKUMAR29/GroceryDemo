@@ -77,6 +77,14 @@ class AddProductActivity : AppCompatActivity() {
 
                             Log.d("CategoryStateProductAddActivity",CategoryIds.GROCERY.toString())
                             setupCategorySpinner(categoryList)
+
+                            categoryList.forEach { category ->
+                                when (category.name) {
+                                    "Grocery" -> CategoryIds.GROCERY = category.id
+                                    "Stationary" -> CategoryIds.STATIONARY = category.id
+                                    "Sweets" -> CategoryIds.SWEETS = category.id
+                                }
+                            }
                         }
                         is UiState.Error -> {
                             Toast.makeText(this@AddProductActivity, state.message, Toast.LENGTH_SHORT).show()
