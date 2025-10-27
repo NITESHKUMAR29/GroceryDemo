@@ -32,14 +32,18 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import androidx.core.graphics.toColorInt
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import com.example.grocery.baseSupport.BaseActivity
 import com.example.grocery.states.UiState
 import com.example.grocery.utility.CategoryIds
 import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val viewModel: ProductListViewModel by viewModels()
@@ -127,7 +131,7 @@ class MainActivity : AppCompatActivity() {
         val tabs = listOf("All", "Grocery", "Stationary", "Sweets")
 
         val tabIcons = mapOf(
-            "All" to R.drawable.grocery,
+            "All" to R.drawable.all_service,
             "Grocery" to R.drawable.grocery,
             "Stationary" to R.drawable.stationery,
             "Sweets" to R.drawable.sweets
@@ -255,6 +259,27 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onContentChanged() {
+        super.onContentChanged()
+        applyEdgeToEdge(findViewById(android.R.id.content))
+    }
+    private fun applyEdgeToEdge(content: View?) {
+        if (content == null) return
+
+        ViewCompat.setOnApplyWindowInsetsListener(content) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            view.updatePadding(
+                left = systemBars.left,
+                top = 0,
+                right = systemBars.right,
+                bottom = systemBars.bottom
+            )
+            WindowInsetsCompat.CONSUMED
+        }
+        ViewCompat.requestApplyInsets(content)
     }
 
 }
